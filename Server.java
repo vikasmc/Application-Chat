@@ -75,7 +75,7 @@ public class CtoFService {
 		return Names;
 	}
 	
-	@Path("/Messages")
+	@Path("/SendMessages")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON )
     public Response SendMessage(String toa) {
