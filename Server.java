@@ -19,15 +19,20 @@ import org.json.JSONObject;
 
 @Path("/chat")
 public class CtoFService {
+	// names of clients
 	public static ArrayList<String> users=new ArrayList<String>();
+	// used to send message
 	public static HashMap<String, String> mess=new HashMap<String, String>();
 	public static Map<String, HashMap<String,String>> gens = new HashMap<String,HashMap<String,String>>();
+	//used to store message in the server
 	public static ArrayList<String> logg=new ArrayList<String>();
+	// used to check client sare available or not
 	public static HashMap<String, Boolean> messs=new HashMap<String, Boolean>();
 	public String to;
 	public String from;
 	public String message;
 	
+	//to register to caht server
 	@Path("/Register")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -36,8 +41,6 @@ public class CtoFService {
 		if(!users.contains(name)){
 			users.add(name);
 			messs.put(name, true);
-			//mess.put(null, null);
-			//gens.put(name, mess);
 			logg.add("the user "+name+" has been added");
 			return Response.status(201).entity("success").build();
 		}
@@ -45,7 +48,7 @@ public class CtoFService {
 			return Response.status(201).entity("please try again with different Name").build();
 		}
 	}
-	
+	// checking wheather the client is free to chat
 	@Path("/Verify")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -63,7 +66,7 @@ public class CtoFService {
 			return Response.status(201).entity("No user exist on that name please try again").build();
 		}
 	}
-	
+	// getting clients who are online
 	@Path("/Names")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
@@ -74,7 +77,7 @@ public class CtoFService {
 		}
 		return Names;
 	}
-	
+	// sending message
 	@Path("/SendMessages")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON )
@@ -90,7 +93,7 @@ public class CtoFService {
 		gens.put(f,mess);
 		return Response.status(201).entity("Message sent from "+g+" to "+f ).build();
     }
-	
+	// getting message
 	@Path("/GetMessage")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -112,6 +115,7 @@ public class CtoFService {
 			return Response.status(201).entity("failure").build();
 		}
 	}
+	//when user wants to quit chat
 	@Path("/del/{name}")
 	@DELETE
 	public Response DeleteUser(@PathParam("name") String name) {
@@ -125,6 +129,7 @@ public class CtoFService {
 			return Response.status(401).build();
 		}
 	}
+	// when user wants to caht with another client
 	@Path("{name}")
 	@DELETE
 	public void Delete(@PathParam("name") String name) {
