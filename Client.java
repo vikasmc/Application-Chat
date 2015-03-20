@@ -67,7 +67,7 @@ public class RestClient {
 			e.printStackTrace();
 		}
 	}
-
+	// to register to chat app
 	private void SendName() {
 		
 		try {
@@ -89,6 +89,7 @@ public class RestClient {
 			e.printStackTrace();
 		}
 	}
+	// to list user
 	private void ListUsers(){
 		try {
 			System.out.println("The Users who are online are");
@@ -102,6 +103,7 @@ public class RestClient {
 			e.printStackTrace();
 		}
 	}
+	// to check wheather the client free to talk 
 	private void GetToName(){
 		try {
 			String output;
@@ -124,6 +126,7 @@ public class RestClient {
 				e.printStackTrace();
 			}
 	}
+	//to send the message
 	private void SendMessage(){
 		try {
 			Client client = Client.create();
@@ -143,7 +146,7 @@ public class RestClient {
 			e.printStackTrace();
 		}
 	}
-	
+	// to recieves message
 	private void GetMessage(){
 			try {
 				String output;
@@ -164,7 +167,7 @@ public class RestClient {
 					e.printStackTrace();
 				}
 	}
-	
+	// to quit chat app
 	private void LogOffChat(){
 		try {
 			Client client = Client.create();
@@ -174,7 +177,7 @@ public class RestClient {
 			e.printStackTrace();
 			}
 		}
-	
+	// to quit chat and start chatting with other client
 	private void LogOff(){
 		try {
 			Client client = Client.create();
