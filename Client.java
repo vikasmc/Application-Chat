@@ -137,7 +137,6 @@ public class RestClient {
 			obj.put("message",message);
 			String input=obj.toString();
 			ClientResponse response = webResource.type("application/json").post(ClientResponse.class, input);
-			//System.out.println("Message deliverd..");
 			String output = response.getEntity(String.class);
 			System.out.println(output);
 			} catch (Exception e) {
