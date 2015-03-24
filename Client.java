@@ -11,147 +11,82 @@ import com.sun.jersey.api.client.WebResource;
 
 public class RestClient {
 
+	//URL of the chatServer
+	final public String HOME="http://localhost:8456/CrunchifyRESTJerseyExample/ChatServer";
 	
-	final public String HOME="http://localhost:8456/CrunchifyRESTJerseyExample/chat";
-	public static String name;
-	public String message;
-	public static String to;
-	public static boolean exit=true;
-	
-	public static void main(String[] args) {
-		RestClient r = new RestClient();
-		r.SendName();
-		r.ListUsers();
-		try {
-			String output;
-			do{
-			System.out.println("type wait to wait");
-			System.out.println("type chat to chat");
-			System.out.println("type exit to exit");
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-		    output = stdIn.readLine();
-			if(output.equals("wait")){
-				System.out.println("waitng ......");
-				do{
-				System.out.println("continue or quit");
-				output=stdIn.readLine();
-				if(output.equals("continue")){
-					r.GetMessage();
-					r.SendMessage();
-					exit=true;
-				}
-				else{
-					r.LogOff();
-					exit=false;
-				}
-				}while(exit);
-			}
-			else if(output.equals("chat")) {
-				r.GetToName();
-				do{
-				System.out.println("continue or quit");
-				output=stdIn.readLine();
-				if(output.equals("continue")){
-				r.SendMessage();
-				r.GetMessage();
-					}
-				else{
-					r.LogOff();
-					exit=false;
-				}
-				}while(exit);
-			} 
-		}while(!output.equals("exit"));
-			r.LogOffChat();
-		}catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	// to register to chat app
-	private void SendName() {
+	//To register
+	public String SendName(String name) {
 		
+		String output=null;
 		try {
-		String output;
 		Client client = Client.create();
-		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-		do {
 		WebResource webResource = client.resource(HOME+"/Register");
-		System.out.println("enter Your Name");
-		name = stdIn.readLine();
 		ClientResponse response = webResource.type("text/plain").put(ClientResponse.class, name);
 		if (response.getStatus() != 201) {
 			throw new RuntimeException("Failed : HTTP error code : "+ response.getStatus());
 		}
 		output = response.getEntity(String.class);
-		System.out.println(output);
-		} while (output.equals("please try again with different Name"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return output;
 	}
-	// to list user
-	private void ListUsers(){
+	
+	//To get the list of users
+	public String ListUsers(){
+		String output=null;
 		try {
-			System.out.println("The Users who are online are");
-			URL oracle = new URL(HOME+"/Names");
+			URL oracle = new URL(HOME+"/GetUsers");
 			BufferedReader in = new BufferedReader(new InputStreamReader(oracle.openStream()));
-			String inputLine;
-			inputLine = in.readLine();
-			System.out.println(inputLine);
+			output = in.readLine();
 			in.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return output;
 	}
-	// to check wheather the client free to talk 
-	private void GetToName(){
+	
+	//To verify that the user is ready to chat.
+	public String GetToName(String name){
+		String output = null;
 		try {
-			String output;
 			Client client = Client.create();
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-			System.out.println("Enter username you want to chat to");
-			do {
 			WebResource webResource = client.resource(HOME+"/Verify");
-			to = stdIn.readLine();
-			ClientResponse response = webResource.type("text/plain").put(ClientResponse.class, to);
+			ClientResponse response = webResource.type("text/plain").put(ClientResponse.class, name);
 			if (response.getStatus() != 201) {
 				throw new RuntimeException("Failed : HTTP error code : "+ response.getStatus());
 			}
 			output = response.getEntity(String.class);
-			if(!output.equals("")){
-				System.out.println(output);
-			}
-			}while (output.equals("No user exist on that name please try again")||output.equals("the user is busy, try another user to chat"));
 			}catch (Exception e) {
 				e.printStackTrace();
 			}
+		return output;
 	}
-	//to send the message
-	private void SendMessage(){
+	
+	//To send message
+	public String SendMessage(String from,String to,String message){
+		String output=null;
 		try {
 			Client client = Client.create();
-			BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
 			WebResource webResource = client.resource(HOME+"/SendMessages");
-			System.out.println("Enter the message you want to send to"+to);
-			message=stdIn.readLine();
 			JSONObject obj=new JSONObject();
 			obj.put("to",to);
-			obj.put("from",name);
+			obj.put("from",from);
 			obj.put("message",message);
 			String input=obj.toString();
 			ClientResponse response = webResource.type("application/json").post(ClientResponse.class, input);
-			String output = response.getEntity(String.class);
-			System.out.println(output);
+			output = response.getEntity(String.class);
 			} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return output;
 	}
-	// to recieves message
-	private void GetMessage(){
+	
+	//To recieve message.
+	public String GetMessage(String name){
+		String output = null;
 			try {
-				String output;
 				Client client = Client.create();
-				System.out.println("waitng for reply");
 				do{
 				WebResource webResource = client.resource(HOME+"/GetMessage");
 				ClientResponse response = webResource.type("text/plain").put(ClientResponse.class, name);
@@ -160,15 +95,14 @@ public class RestClient {
 				}
 				output = response.getEntity(String.class);
 				}while(output.equals("failure") || output.equals(null+": "+null));
-				System.out.println(output);
-				String namepass[] = output.split(":"); 
-				to = namepass[0]; 
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+			return output;
 	}
-	// to quit chat app
-	private void LogOffChat(){
+	
+	//To quit chatapp
+	public void LogOffChat(String name){
 		try {
 			Client client = Client.create();
 			WebResource webResource = client.resource(HOME+"/del/"+name);
@@ -177,8 +111,10 @@ public class RestClient {
 			e.printStackTrace();
 			}
 		}
-	// to quit chat and start chatting with other client
-	private void LogOff(){
+	
+	
+	//to chat to other client
+	public void LogOff(String name){
 		try {
 			Client client = Client.create();
 			WebResource webResource = client.resource(HOME+"/"+name);
