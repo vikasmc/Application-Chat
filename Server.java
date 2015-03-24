@@ -13,26 +13,26 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 
 import org.json.JSONObject;
 
-@Path("/chat")
+@Path("/ChatServer")
 public class CtoFService {
-	// names of clients
+	
+	//to store username.
 	public static ArrayList<String> users=new ArrayList<String>();
-	// used to send message
+	//to store messages.
 	public static HashMap<String, String> mess=new HashMap<String, String>();
 	public static Map<String, HashMap<String,String>> gens = new HashMap<String,HashMap<String,String>>();
-	//used to store message in the server
+	//to store log files int he server.
 	public static ArrayList<String> logg=new ArrayList<String>();
-	// used to check client sare available or not
+	//to store the status of the clients.
 	public static HashMap<String, Boolean> messs=new HashMap<String, Boolean>();
 	public String to;
 	public String from;
 	public String message;
 	
-	//to register to caht server
+	// To Register clients to chat application
 	@Path("/Register")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -48,7 +48,8 @@ public class CtoFService {
 			return Response.status(201).entity("please try again with different Name").build();
 		}
 	}
-	// checking wheather the client is free to chat
+	
+	//To check wheather the client is free to talk or not
 	@Path("/Verify")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -56,6 +57,7 @@ public class CtoFService {
 	public Response VerifyUser(String name)  {
 		if(users.contains(name)){
 			if(messs.get(name)){
+				messs.put(name, false);
 				return Response.status(201).entity("").build();
 			}
 			else{
@@ -66,8 +68,9 @@ public class CtoFService {
 			return Response.status(201).entity("No user exist on that name please try again").build();
 		}
 	}
-	// getting clients who are online
-	@Path("/Names")
+	
+	// To get hte users who are online.
+	@Path("/GetUsers")
 	@GET
 	@Produces(MediaType.TEXT_PLAIN)
 	public String ShowUser(){
@@ -75,9 +78,10 @@ public class CtoFService {
 		for (String s2 : users){
 			Names+=s2+" ";
 		}
-		return Names;
+		return Names;//List of Clients
 	}
-	// sending message
+	
+	//TO send message
 	@Path("/SendMessages")
 	@POST
 	@Consumes(MediaType.APPLICATION_JSON )
@@ -86,14 +90,26 @@ public class CtoFService {
 		String f=obj.getString("to");
 		String g=obj.getString("from");
 		String h=obj.getString("message");
-		messs.put(f, false);
-		messs.put(g, false);
-		logg.add(toa);
-		mess.put(g,h);
-		gens.put(f,mess);
-		return Response.status(201).entity("Message sent from "+g+" to "+f ).build();
+		if(messs.get(f)!=null){
+			if(messs.get(f)){
+				return Response.status(201).entity("the user "+to+" has left chat" ).build();
+			}
+			else{
+				messs.put(f, false);
+				messs.put(g, false);
+				logg.add(toa);
+				mess.put(g,h);
+				gens.put(f,mess);
+				return Response.status(201).entity("Message sent from "+g+" to "+f ).build();
+			}
+		}
+		else{
+			return Response.status(201).entity("the user "+f+" is not online").build();
+		}
+		
     }
-	// getting message
+	
+	//To recieve message
 	@Path("/GetMessage")
 	@PUT
 	@Consumes(MediaType.TEXT_PLAIN)
@@ -115,7 +131,8 @@ public class CtoFService {
 			return Response.status(201).entity("failure").build();
 		}
 	}
-	//when user wants to quit chat
+	
+	//To remove Client from the Chat.
 	@Path("/del/{name}")
 	@DELETE
 	public Response DeleteUser(@PathParam("name") String name) {
@@ -129,7 +146,8 @@ public class CtoFService {
 			return Response.status(401).build();
 		}
 	}
-	// when user wants to caht with another client
+	
+	// to make Client talk to other person.
 	@Path("{name}")
 	@DELETE
 	public void Delete(@PathParam("name") String name) {
