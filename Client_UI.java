@@ -20,9 +20,7 @@ import java.awt.event.WindowEvent;
 
 
 public class HelloUi extends Frame implements ActionListener, KeyListener{
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 	Label meslabel;
 	TextField mesg;
@@ -75,9 +73,10 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 		exits.addActionListener(this);
 		r = new RestClient();
 	}
-
+	
 	public void actionPerformed(ActionEvent ae) {
 		Button btn = (Button) ae.getSource();
+		
 		if (btn == login) {
 			loginDialog ld = new loginDialog(this);
 			ld.show();
@@ -106,7 +105,7 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 				ta.append("\n"+txt);
 			}
 			else if(output.equals("the user "+to+" is not online")){
-				ta.append("\n"+txt);
+				ta.append("\nthe user is not online");
 				send.setEnabled(false);
 				setuser.setEnabled(true);
 			}
@@ -162,6 +161,7 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 
 	}
 
+	//to recieve message
 	class MessageReader extends Thread {
 		String msg;
 
@@ -187,6 +187,7 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 
 }
 
+//to get name from the user to register
 class loginDialog extends Dialog implements ActionListener {
 	Label loginname;
 	TextField logintext;
@@ -221,6 +222,7 @@ class loginDialog extends Dialog implements ActionListener {
 	}
 }
 
+//to get the name of the user that client want to talk to
 class GetDialog extends Dialog implements ActionListener {
 	Label loginname;
 	TextField logintext;
