@@ -18,7 +18,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
 
-public class HelloUi extends Frame implements ActionListener, KeyListener{
+public class ClientUi extends Frame implements ActionListener, KeyListener{
 	
 	private static final long serialVersionUID = 1L;
 	Label meslabel;
@@ -29,7 +29,8 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 	static String message, messg, usr, name, to;
 	RestClient r;
 
-	public HelloUi(String title) {
+	
+	public ClientUi(String title) {
 		super(title);
 		initComponents();
 		setLayout(new BorderLayout());
@@ -73,6 +74,7 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 		r = new RestClient();
 	}
 	
+	//Actions to be performed when the button is pressed. 
 	public void actionPerformed(ActionEvent ae) {
 		Button btn = (Button) ae.getSource();
 		
@@ -160,7 +162,7 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 
 	}
 
-	//to recieve message
+	//To recieve message this thread is used.
 	class MessageReader extends Thread {
 		String msg;
 
@@ -177,8 +179,9 @@ public class HelloUi extends Frame implements ActionListener, KeyListener{
 		}
 	}
 
+	//Main method.
 	public static void main(String s[]) {
-		HelloUi mcc = new HelloUi("Client");
+		ClientUi mcc = new ClientUi("Client");
 		mcc.setVisible(true);
 		mcc.show();
 	}
