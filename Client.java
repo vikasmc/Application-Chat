@@ -12,7 +12,7 @@ import com.sun.jersey.api.client.WebResource;
 public class RestClient {
 
 	//URL of the chatServer
-	final public String HOME="http://localhost:8456/CrunchifyRESTJerseyExample/ChatServer";
+	final public String HOME="http://localhost:8456/ChatApplication/ChatServer";
 	
 	//To register
 	public String SendName(String name) {
